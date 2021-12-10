@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FrequencyAnalysis
 {
@@ -24,7 +25,6 @@ namespace FrequencyAnalysis
                     count++;
                     letterIndices.Add(input[i], count);
                 }
-        
 
                 encryptedMsg += letterIndices[input[i]] + ".";
             }
@@ -33,20 +33,21 @@ namespace FrequencyAnalysis
         }
         static Dictionary<string, List<string>> LoadWords(string[] dictionary)
         {
-            Dictionary<string, List<string>> PossibleWords = new Dictionary<string, List<string>>();
-            List<string> combinations = new List<string>();
+            Dictionary<string, List<string>> possibleWords = new Dictionary<string, List<string>>();
 
             for (int i = 0; i < dictionary.Length; i++)
             {
-                if (!combinations.Contains(FrequencyAnalysis(dictionary[i])))
+                string frequencyCode = FrequencyAnalysis(dictionary[i]);
+
+                if (!possibleWords.ContainsKey(frequencyCode))
                 {
-                    combinations.Add(FrequencyAnalysis(dictionary[i]));
-                    PossibleWords.Add(FrequencyAnalysis(dictionary[i]), combinations);
+                    possibleWords.Add(frequencyCode, new List<string>());
                 }
 
+                possibleWords[frequencyCode].Add(dictionary[i]);
             }
 
-            return PossibleWords;
+            return possibleWords;
         }
 
         static void Main(string[] args)
@@ -60,7 +61,7 @@ namespace FrequencyAnalysis
             //string input = Console.ReadLine();
             //Console.WriteLine(FrequencyAnalysis(input));
 
-            Console.WriteLine(LoadWords(dictionary));
+            var result = LoadWords(dictionary);
         }
     }
 }
